@@ -34,7 +34,8 @@ decode_shit() {
 	-e "s/&#039;/'/g" \
 	-e 's/<br>/\n/g' \
 	-e 's/\\\//\//g' \
-	-e 's/\\n/\n/g'
+	-e 's/\\n/\n/g' \
+	-e 's/<[^>]*>//g'
 }
 
 print_box() {
@@ -107,7 +108,7 @@ EOF
 json_parse() {
 	raw=$(curl "$to_grab")
 	#printf '%s\n' "$raw"
-	raw=$(printf '%s\n' "$raw" | sed -e 's/},\("[0-9]\|{"\)/}\n&/g' -e 's/<[^>b]*>//g' -e 's/{"posts":\[{//')
+	raw=$(printf '%s\n' "$raw" | sed -e 's/},\("[0-9]\|{"\)/}\n&/g' -e 's/{"posts":\[{//')
 	printf '%s\n' "$raw" | while IFS= read -r reply
 	do
 		reply=$(printf '%s' "$reply" | sed -e 's/\(,\|:{\)"/\n"/g')
