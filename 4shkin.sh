@@ -45,6 +45,7 @@ print_box() {
 	author="$3"
 	postid="$4"
 	text="$5"
+	image="$6"
 
 	printf '┌%*s┐\n' 78 '' | sed -e 's/ /─/g'
 
@@ -85,7 +86,12 @@ print_box() {
 	done << EOF
 $text
 EOF
-	printf '└%-*s┘\n\n' 78 '' | sed -e 's/ /─/g'
+	printf '└%-*s┘\n' 78 '' | sed -e 's/ /─/g'
+	if [ -n "$image" ]
+	then
+		printf 'Image link: %s\n' "https://i.4cdn.org/$board/$image"
+	fi
+	printf '\n'
 }
 
 prettify_text() {
@@ -120,6 +126,7 @@ json_parse() {
 		unset reply_titl
 		unset reply_name
 		unset reply_file
+		unset reply_imag
 
 		while IFS= read -r line
 		do
@@ -131,11 +138,12 @@ json_parse() {
 				'"sub"'*)		reply_titl=$(decode_shit "${line#*:}") ;;
 				'"name"'*|'"author"'*)		reply_name=$(decode_shit "${line#*:}") ;;
 				'"filename"'*|'"file"'*)	reply_file=$(decode_shit "${line#*:}") ;;
+				'"tim"'*)		reply_imag="${line#*:}$reply_extn" ;;
 			esac
 		done << EOF
 $reply
 EOF
-		print_box "$reply_file$reply_extn" "$reply_titl" "$reply_name" "$reply_nmbr" "$reply_text"
+		print_box "$reply_file$reply_extn" "$reply_titl" "$reply_name" "$reply_nmbr" "$reply_text" "$reply_imag"
 	done
 }
 
