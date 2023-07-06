@@ -35,7 +35,8 @@ decode_shit() {
 	-e 's/<br>/\n/g' \
 	-e 's/\\\//\//g' \
 	-e 's/\\n/\n/g' \
-	-e 's/<[^>]*>//g'
+	-e 's/<[^>]*>//g' \
+	-e 's/}$//g'
 }
 
 print_box() {
@@ -123,8 +124,9 @@ json_parse() {
 		while IFS= read -r line
 		do
 			case "$line" in
-				*'no"'*|'"'[0-9]*'"')		reply_nmbr="${line#*:}" ;;
-				'"com"'*|'"teaser"'*)		reply_text=$(decode_shit "${line#*:}") ;;
+				*'no"'*|'"'[0-9]*'"')		reply_nmbr=$(decode_shit "${line#*:}") ;; # Not super necessary but nice
+				'"com"'*)		reply_text=$(decode_shit "${line#*:}") ;;
+				'"teaser"'*)	reply_text=$(decode_shit "${line#*:}" | cut -c -156)"..." ;;
 				'"ext"'*)		reply_extn=$(decode_shit "${line#*:}") ;;
 				'"sub"'*)		reply_titl=$(decode_shit "${line#*:}") ;;
 				'"name"'*|'"author"'*)		reply_name=$(decode_shit "${line#*:}") ;;
