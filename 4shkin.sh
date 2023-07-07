@@ -157,13 +157,17 @@ EOF
 	done
 }
 
-if [ -n "$thread" ]
+if [ -n "$board" ] && [ -n "$thread" ]
 then
 	printf 'Loading thread %s on board /%s/\n' "$thread" "$board" 1>&2
 	to_grab='https://a.4cdn.org/'$board'/thread/'$thread'.json'
-else
+elif [ -n "$board" ]
+then
 	printf 'Loading board - /%s/\n' "$board" 1>&2
 	to_grab='https://boards.4channel.org/'$board'/catalog'
+else
+	printf 'No board specified!'
+	exit
 fi
 
 #printf '%s' "$(json_parse)" # So it all displays at once
