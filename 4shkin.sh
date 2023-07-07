@@ -113,8 +113,14 @@ EOF
 }
 
 json_parse() {
-	raw=$(curl "$to_grab")
-	#printf '%s\n' "$raw"
+	raw=$(curl -s "$to_grab")
+	error_text='alt="404 Not Found"'
+	if [ -z "$raw" ]
+	then
+		printf 'Page not found. Thread may have fallen off\n'
+		printf '%s\n' "$raw"
+		exit
+	fi
 	raw=$(printf '%s\n' "$raw" | sed -e 's/},\("[0-9]\|{"\)/}\n&/g' -e 's/{"posts":\[{//')
 	printf '%s\n' "$raw" | while IFS= read -r reply
 	do
@@ -137,8 +143,8 @@ json_parse() {
 				'"ext"'*)		reply_extn=$(decode_shit "${line#*:}") ;;
 				'"sub"'*)		reply_titl=$(decode_shit "${line#*:}") ;;
 				'"name"'*|'"author"'*)		reply_name=$(decode_shit "${line#*:}") ;;
-				'"filename"'*|'"file"'*)	reply_file=$(decode_shit "${line#*:}") ;;
-				'"tim"'*)		reply_imag="${line#*:}$reply_extn" ;;
+			'"filename"'*|'"file"'*)	reply_file=$(decode_shit "${line#*:}") ;;
+			'"tim"'*)		reply_imag="${line#*:}$reply_extn" ;;
 			esac
 		done << EOF
 $reply
@@ -149,8 +155,12 @@ EOF
 
 if [ -n "$thread" ]
 then
+	printf 'Loading thread %s on board /%s/\n' "$thread" "$board" 1>&2
 	to_grab='https://a.4cdn.org/'$board'/thread/'$thread'.json'
 else
+	printf 'Loading board - /%s/\n' "$board" 1>&2
 	to_grab='https://boards.4channel.org/'$board'/catalog'
 fi
+
+#printf '%s' "$(json_parse)" # So it all displays at once
 json_parse
