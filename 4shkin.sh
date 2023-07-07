@@ -115,12 +115,16 @@ EOF
 json_parse() {
 	raw=$(curl -s "$to_grab")
 	error_text='alt="404 Not Found"'
-	if [ -z "$raw" ]
-	then
-		printf 'Page not found. Thread may have fallen off\n'
-		printf '%s\n' "$raw"
-		exit
-	fi
+	case "$raw" in
+		'') # Because i use the cdn for threads and the main for boards, an empty thread is empty and an empty board is html
+			printf 'Page not found. Thread may have fallen off\n'
+			#printf '%s\n' "$raw"
+			exit ;;
+		*"$error_text"*)
+			printf 'Board not found. Did you type it correctly?\n'
+			#printf '%s\n' "$raw"
+			exit ;;
+	esac
 	raw=$(printf '%s\n' "$raw" | sed -e 's/},\("[0-9]\|{"\)/}\n&/g' -e 's/{"posts":\[{//')
 	printf '%s\n' "$raw" | while IFS= read -r reply
 	do
