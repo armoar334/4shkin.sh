@@ -62,7 +62,7 @@ print_box() {
 		printf '|%s' "[ $filename ]" 
 		printf '%*s|\n' $(( 74 - ${#filename} )) '' | tr ' ' '-'
 	else
-		printf '+%*s+\n' 78 '' | tr ' ' '-'
+		printf '|%*s|\n' 78 '' | tr ' ' '-'
 	fi
 
 	if [ -n "$filename" ]
@@ -86,7 +86,7 @@ print_box() {
 	done << EOF
 $text
 EOF
-	printf '|%-*s+\n' 78 '' | tr ' ' '-'
+	printf '+%-*s+\n' 78 '' | tr ' ' '-'
 	if [ -n "$image" ]
 	then
 		printf 'Image link: %s\n' "https://i.4cdn.org/$board/$image"
