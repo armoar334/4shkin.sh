@@ -47,31 +47,31 @@ print_box() {
 	text="$5"
 	image="$6"
 
-	printf '┌%*s┐\n' 78 '' | sed -e 's/ /─/g'
+	printf '+%*s+\n' 78 '' | tr ' ' '-'
 
 	if [ -n "$title" ]
 	then
-		printf '│\033[4m%s\033[0m%*s│\n' "$title" $(( 78 - ${#title} )) ''
+		printf '|\033[4m%s\033[0m%*s|\n' "$title" $(( 78 - ${#title} )) ''
 	fi
 
-	printf '│%s' "$author"
-	printf '\033[90m %-*s\033[0m│\n' $(( 77 - ${#author} )) "$postid"
+	printf '|%s' "$author"
+	printf '\033[90m %-*s\033[0m|\n' $(( 77 - ${#author} )) "$postid"
 
 	if [ -n "$filename" ]
 	then
-		printf '├%s' "[ $filename ]" 
-		printf '%*s┤\n' $(( 74 - ${#filename} )) '' | sed -e 's/ /─/g'
+		printf '|%s' "[ $filename ]" 
+		printf '%*s|\n' $(( 74 - ${#filename} )) '' | tr ' ' '-'
 	else
-		printf '├%*s┤\n' 78 '' | sed -e 's/ /─/g'
+		printf '+%*s+\n' 78 '' | tr ' ' '-'
 	fi
 
 	if [ -n "$filename" ]
 	then
-		printf '│%-*s│\n' 78 '+---------+'
-		printf '│%-*s│\n' 78 '|         |'
-		printf '│%-*s│\n' 78 '| I  M  G |'
-		printf '│%-*s│\n' 78 '|         |'
-		printf '│%-*s│\n' 78 '+---------+'
+		printf '|%-*s|\n' 78 '+---------+'
+		printf '|%-*s|\n' 78 '|         |'
+		printf '|%-*s|\n' 78 '| I  M  G |'
+		printf '|%-*s|\n' 78 '|         |'
+		printf '|%-*s|\n' 78 '+---------+'
 	fi
 
 
@@ -82,11 +82,11 @@ print_box() {
 		width=$( printf '%s' "$line" | grep -o $(printf '\033') | wc -l )
 		width=$(( width * 5 ))
 		width=$(( width + 78 ))
-		printf '│%-*s│\n' "$width" "$line"
+		printf '|%-*s|\n' "$width" "$line"
 	done << EOF
 $text
 EOF
-	printf '└%-*s┘\n' 78 '' | sed -e 's/ /─/g'
+	printf '|%-*s+\n' 78 '' | tr ' ' '-'
 	if [ -n "$image" ]
 	then
 		printf 'Image link: %s\n' "https://i.4cdn.org/$board/$image"
